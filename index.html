@@ -213,8 +213,43 @@
         <div class="safety-badge">
             <span style="margin-right:8px">🛡️</span> Your information is safe, encrypted, and strictly confidential
         </div>
-        <!-- highlighter explaining scale -->
-        <p class="scale-highlighter">4 – Strongly Agree | 3 – Agree | 2 – Disagree | 1 – Strongly Disagree</p>
+    </div>
+
+    <div class="section-card" style="margin-bottom:30px; background: var(--bg); border-radius:16px; padding:20px;">
+        <h2 style="font-size:1.2rem;">Conceptual Framework</h2>
+        <p style="font-size:0.9rem; color:var(--text-muted);">This survey examines the relationship between social media usage factors and their impact on mental health and academic performance among senior high school students.</p>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:20px; margin-top:20px;">
+            <div>
+                <strong>Factors of Social Media Usage:</strong>
+                <ul style="margin:5px 0; padding-left:20px;">
+                    <li>Academic-Related Use</li>
+                    <li>Social Interaction & Communication</li>
+                    <li>Entertainment & Leisure Use</li>
+                </ul>
+            </div>
+            <div>
+                <strong>Demographic Profile:</strong>
+                <ul style="margin:5px 0; padding-left:20px;">
+                    <li>Age</li>
+                    <li>Sex</li>
+                    <li>Grade Level</li>
+                    <li>Strand Enrolled</li>
+                </ul>
+            </div>
+            <div>
+                <strong>Outcomes:</strong>
+                <ul style="margin:5px 0; padding-left:20px;">
+                    <li>Academic Performance</li>
+                    <li>Mental Health</li>
+                </ul>
+            </div>
+            <div>
+                <strong>Action Plan:</strong>
+                <ul style="margin:5px 0; padding-left:20px;">
+                    <li>Recommendations & Interventions</li>
+                </ul>
+            </div>
+        </div>
     </div>
 
     <div class="sticky-progress">
@@ -250,7 +285,7 @@
                         <option value="Female">Female</option>
                     </select>
                 </div>
-                <div class="input-group">
+        <div class="input-group">
                     <label>Strand</label>
                     <select name="strand" required>
                         <option value="">Select...</option>
@@ -258,6 +293,14 @@
                         <option value="ABM">ABM</option>
                         <option value="HUMSS">HUMSS</option>
                         <option value="TVL">TVL</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Grade Level</label>
+                    <select name="grade" required>
+                        <option value="">Select...</option>
+                        <option value="11">Grade 11</option>
+                        <option value="12">Grade 12</option>
                     </select>
                 </div>
             </div>
@@ -288,8 +331,21 @@
 
     const sections = [
         {
-            title: "Part II: Social Media Usage",
-            qs: ["I use social media every day.", "I spend several hours per day on social media.", "I check social media frequently.", "I use social media before sleeping.", "I check social media immediately after waking up.", "I extend my screen time longer than planned.", "I use social media during schoolwork.", "I use social media during school breaks.", "I feel the urge to check social media often.", "I cannot go a day without social media.", "I post regularly on social media.", "I actively comment on posts.", "I compare myself with others online.", "I feel happy when my posts receive likes or reactions.", "I feel disappointed when my posts receive few reactions.", "Notifications easily distract me.", "I use social media while doing homework.", "I delay school tasks because of social media.", "I feel uncomfortable when I cannot access social media.", "I lose track of time while browsing."]
+            title: "Part II: Factors of Social Media Usage",
+            subsections: [
+                {
+                    title: "Academic-Related Use of Social Media",
+                    qs: ["I use social media to research school topics.", "I join educational groups online.", "I watch educational videos on social media.", "I participate in academic discussions online.", "I use social media to submit academic requirements."]
+                },
+                {
+                    title: "Social Interaction and Communication",
+                    qs: ["I post regularly on social media.", "I actively comment on posts.", "I feel happy when my posts receive likes or reactions.", "I feel disappointed when my posts receive few reactions.", "I compare myself with others online."]
+                },
+                {
+                    title: "Entertainment and Leisure Use",
+                    qs: ["I use social media every day.", "I spend several hours per day on social media.", "I check social media frequently.", "I use social media before sleeping.", "I check social media immediately after waking up.", "I extend my screen time longer than planned.", "I feel the urge to check social media often.", "I cannot go a day without social media.", "Notifications easily distract me.", "I lose track of time while browsing."]
+                }
+            ]
         },
         {
             title: "Part III: Mental Health Status",
@@ -308,35 +364,68 @@
         const div = document.createElement('div');
         div.className = 'section-card';
 
-        div.innerHTML = `
-            <h2>${sec.title}</h2>
-            <div class="scale-legend">
+        let html = `<h2>${sec.title}</h2>`;
+        if (sec.title === "Part II: Factors of Social Media Usage") {
+            html += `<p class="scale-highlighter" style="margin-bottom:20px; text-align:center;">4 – Strongly Agree | 3 – Agree | 2 – Disagree | 1 – Strongly Disagree</p>`;
+        }
+        div.innerHTML = html;
+        
+        if (sec.subsections) {
+            sec.subsections.forEach(sub => {
+                div.innerHTML += `<h3 style="font-size:1.1rem; color:var(--primary); margin-top:30px; margin-bottom:10px; padding-left:15px; border-left:5px solid var(--primary);">${sub.title}</h3>
+                <div class="scale-legend">
+                    <div class="scale-legend-item">1</div>
+                    <div class="scale-legend-item">2</div>
+                    <div class="scale-legend-item">3</div>
+                    <div class="scale-legend-item">4</div>
+                </div>`;
+                sub.qs.forEach(text => {
+                    const row = document.createElement('div');
+                    row.className = 'q-row';
+                    row.innerHTML = `
+                        <div class="q-text">${qIdx}. ${text}</div>
+                        <div class="scale-track">
+                            ${[1,2,3,4].map(val => `
+                                <div class="scale-option">
+                                    <label>
+                                        <input type="radio" name="q${qIdx}" value="${val}" required>
+                                        <div class="scale-circle"></div>
+                                    </label>
+                                </div>
+                            `).join('')}
+                        </div>
+                    `;
+                    div.appendChild(row);
+                    qIdx++;
+                });
+            });
+        } else {
+            div.innerHTML += `<div class="scale-legend">
                 <div class="scale-legend-item">1</div>
                 <div class="scale-legend-item">2</div>
                 <div class="scale-legend-item">3</div>
                 <div class="scale-legend-item">4</div>
-            </div>
-        `;
-        
-        sec.qs.forEach(text => {
-            const row = document.createElement('div');
-            row.className = 'q-row';
-            row.innerHTML = `
-                <div class="q-text">${qIdx}. ${text}</div>
-                <div class="scale-track">
-                    ${[1,2,3,4].map(val => `
-                        <div class="scale-option">
-                            <label>
-                                <input type="radio" name="q${qIdx}" value="${val}" required>
-                                <div class="scale-circle"></div>
-                            </label>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
-            div.appendChild(row);
-            qIdx++;
-        });
+            </div>`;
+            sec.qs.forEach(text => {
+                const row = document.createElement('div');
+                row.className = 'q-row';
+                row.innerHTML = `
+                    <div class="q-text">${qIdx}. ${text}</div>
+                    <div class="scale-track">
+                        ${[1,2,3,4].map(val => `
+                            <div class="scale-option">
+                                <label>
+                                    <input type="radio" name="q${qIdx}" value="${val}" required>
+                                    <div class="scale-circle"></div>
+                                </label>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                div.appendChild(row);
+                qIdx++;
+            });
+        }
 
         contentArea.appendChild(div);
     });
@@ -347,7 +436,7 @@
         let selectCount = 0;
         form.querySelectorAll('select[required]').forEach(s => { if(s.value) selectCount++; });
         const radioCount = form.querySelectorAll('input[type="radio"]:checked').length;
-        const perc = Math.round(((radioCount + selectCount) / 63) * 100);
+        const perc = Math.round(((radioCount + selectCount) / 64) * 100);
         document.getElementById('prog-fill').style.width = Math.min(perc, 100) + '%';
         document.getElementById('prog-text').innerText = Math.min(perc, 100) + '%';
     });
